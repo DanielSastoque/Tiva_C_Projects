@@ -1,32 +1,27 @@
 // Run Mode Clock Gating Control Register 2
 #define RCGC2 (*(volatile unsigned int*)(0x400FE000 + 0x108))
 
-// GPIO High-Performance Bus Control
-#define GPIOHBCTL (*(volatile unsigned int*)(0x400FE000 + 0x06C))
+// GPIO Direction
+#define GPIODIR_F (*(volatile unsigned int*)(0x40025000 + 0x400))
 
 // GPIO Alternate Function Select
-#define GPIOAFSEL_F (*(volatile unsigned int*)(0x4005D000+0x420))
+#define GPIOAFSEL_F (*(volatile unsigned int*)(0x40025000 + 0x420))
 
 // GPIO Digital Enable
-#define GPIODEN_F (*(volatile unsigned int*)(0x4005D000+0x51C))
-
-// GPIO Direction
-#define GPIODIR_F (*(volatile unsigned int*)(0x4005D000+0x400))
+#define GPIODEN_F (*(volatile unsigned int*)(0x40025000 + 0x51C))
 
 // GPIO Data
-#define GPIODATA_F (*(volatile unsigned int*)(0x42000000 + 0x4))
-
+#define GPIODATA_F (*(volatile unsigned int*)(0x40025000 + 0x03FC))
 
 void ledInit(){
-    RCGC2     |= (1 << 5);
-    GPIOHBCTL |= (1 << 5);
+    RCGC2       |= (1 << 5);
+    GPIODIR_F   |= (1 << 1);
     GPIOAFSEL_F &= ~ 0xFF;
-    GPIODIR_F |= 0x10;
-    GPIODEN_F |= 0x10;
+    GPIODEN_F   |= (1 << 1);
 }
 
 void ledToggle(){
-    GPIODATA_F ^= 0x1;
+    GPIODATA_F ^= (1 << 1);
 }
 
 #define CYCLES_PER_MS (80000)
