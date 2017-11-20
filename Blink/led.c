@@ -24,7 +24,7 @@ void ledToggle(){
     GPIODATA_F ^= (1 << 1);
 }
 
-#define CYCLES_PER_MS (80000)
+#define CYCLES_PER_MS (1000)
 
 void delay_ms(int delay){
     long volatile cycles = delay * CYCLES_PER_MS;
