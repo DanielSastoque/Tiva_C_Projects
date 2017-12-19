@@ -16,7 +16,7 @@ openocd:
 	openocd -f ../ek-tm4c123gxl.cfg
 
 gdb:
-	ddd --debugger "arm-none-eabi-gdb blink.elf --command gdb_startup"
+	ddd --debugger "arm-none-eabi-gdb blink.elf --command ../gdb_startup"
 
 flash:
 	lm4flash blink.bin
