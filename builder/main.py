@@ -1,4 +1,5 @@
 import sys
+import atexit
 import subprocess
 
 from PySide2.QtUiTools import QUiLoader
@@ -18,6 +19,9 @@ class Application(QObject):
         loader = QUiLoader()
         self.window = loader.load(ui_file)
 
+        self.jtag = False                   # OpenOCD connection is running?
+        atexit.register(self.kill_openocd)  # Kill OpenOCD at exit
+
         self.window.make.clicked.connect(lambda x: self.make(""))
         self.window.clean.clicked.connect(lambda x: self.make("clean"))
         self.window.flash.clicked.connect(lambda x: self.make("flash"))
@@ -26,14 +30,23 @@ class Application(QObject):
         self.window.show()
 
     def make(self, flag):
+        self.kill_openocd()
+        
         command = "cd {} && make {}".format(C_PROJ, flag)
         subprocess.call(['/bin/bash', '-i', '-c', command])
 
     def debug(self):
+        self.kill_openocd()
         command = "cd {} && make openocd".format(C_PROJ)
-        subprocess.Popen(['/bin/bash', '-i', '-c', command])
+        self.openocd = subprocess.Popen(['/bin/bash', '-i', '-c', command])
+        self.jtag = True
 
         self.make("gdb")
+
+    def kill_openocd(self):
+        if self.jtag:
+            self.jtag = False
+            self.openocd.terminate()
 
 
 if __name__ == '__main__':
