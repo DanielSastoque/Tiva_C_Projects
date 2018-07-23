@@ -33,13 +33,16 @@ class Application(QObject):
         self.window.project.clicked.connect(self.select_project)
         self.selected_project = BASE_DIR + DEFAULT_PROJ
 
+        self.output_text_line = 1
+
         self.window.show()
 
     def make(self, flag):
         self.kill_openocd()
         
         command = "cd {} && make {}".format(self.selected_project, flag)
-        subprocess.call(['/bin/bash', '-i', '-c', command])
+        process = subprocess.Popen(['/bin/bash', '-i', '-c', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.show_output(process.communicate())
 
     def debug(self):
         self.kill_openocd()
@@ -61,6 +64,12 @@ class Application(QObject):
         file_name = file_path.split("/")[-2]
         self.selected_project = file_path
         self.window.selected_project.setText(file_name)
+
+    def show_output(self, output):
+        normal_out, err_out = [out.decode('utf-8') for out in output]
+        text = "{}. - ".format(self.output_text_line) + normal_out + err_out
+        self.window.output_text.appendPlainText(text)
+        self.output_text_line += 1
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
