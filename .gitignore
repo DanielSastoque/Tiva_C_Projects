@@ -8,3 +8,10 @@
 # Binaries, Object code
 *.elf
 *.bin
+
+# Python Virtualenv
+*/env/
+
+# Pycharm
+*.idea
+
