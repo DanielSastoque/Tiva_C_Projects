@@ -33,6 +33,3 @@ void delay_ms(int delay){
         cycles--;
     }
 }
-
-
-void SystemInit(){}
