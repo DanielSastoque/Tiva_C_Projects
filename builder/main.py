@@ -1,3 +1,6 @@
+#!env/bin/python3
+# -*- coding: utf-8 -*-
+
 import sys
 import atexit
 import subprocess
@@ -9,7 +12,7 @@ from PySide2.QtCore import QFile, QObject
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-UI_FILE = 'mainwindow.ui'
+UI_FILE = BASE_DIR + '/builder/mainwindow.ui'
 DEFAULT_PROJ = "/Blink"
 
 class Application(QObject):
@@ -41,13 +44,13 @@ class Application(QObject):
         self.kill_openocd()
         
         command = "cd {} && make {}".format(self.selected_project, flag)
-        process = subprocess.Popen(['/bin/bash', '-i', '-c', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(['/bin/bash', '-c', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.show_output(process.communicate())
 
     def debug(self):
         self.kill_openocd()
         command = "cd {} && make openocd".format(self.selected_project)
-        self.openocd = subprocess.Popen(['/bin/bash', '-i', '-c', command])
+        self.openocd = subprocess.Popen(['/bin/bash', '-c', command])
 
         self.make("gdb")
         self.jtag = True
