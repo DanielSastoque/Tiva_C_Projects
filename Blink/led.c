@@ -11,17 +11,18 @@
 #define GPIODEN_F (*(volatile unsigned int*)(0x40025000 + 0x51C))
 
 // GPIO Data
-#define GPIODATA_F (*(volatile unsigned int*)(0x40025000 + 0x03FC))
+// Modification allowed only for Pin 1 of Port F: 0x008 (mask for bit-specific addressing)
+#define GPIODATA_F (*(volatile unsigned int*)(0x40025000 + 0x008))
 
 void ledInit(){
-    RCGC2       |= (1 << 5);
-    GPIODIR_F   |= (1 << 1);
-    GPIOAFSEL_F &= ~ 0xFF;
-    GPIODEN_F   |= (1 << 1);
+    RCGC2       |= (1 << 5);    // Enable clock for Port F (remember gating clock for energy save)
+    GPIODIR_F   |= (1 << 1);    // Pin 1 of port F as output
+    GPIOAFSEL_F &= 0x0;         // All Port F pins as GPIO
+    GPIODEN_F   |= (1 << 1);    // Enable Pin 1 of Port F (remember tri-state logic)
 }
 
 void ledToggle(){
-    GPIODATA_F ^= (1 << 1);
+    GPIODATA_F ^= (1 << 1);     // Switch state of Pin 1 of Port F
 }
 
 #define CYCLES_PER_MS (1000)
