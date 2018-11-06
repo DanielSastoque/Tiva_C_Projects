@@ -8,7 +8,6 @@
 #define STCURRENT (*(volatile unsigned int*)(0xE000E000 + 0x018))
 
 void SysTickInit(){
-    STCTRL &= ~(1 << 2); // PIOSC divided by 4 as Clock Source
     STCTRL |= (1 << 2);  // System clock as Clock Source
     STCTRL |= 1;         // Enables SysTick
 }
