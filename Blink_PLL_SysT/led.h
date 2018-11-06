@@ -1,0 +1,2 @@
+void ledInit();
+void ledToggle();
