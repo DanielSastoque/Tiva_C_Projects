@@ -15,7 +15,7 @@ void PLL_Init(int divider){
     RCC2 &= ~(1 << 13);  // The PLL turns on.
     
     RCC2 &= ~(0x7F << 22);   // Clear bits of divider
-    RCC2 |= (divider << 22); // Set the desired system divider (PLL MHz / (7 + 1)).
+    RCC2 |= ( (divider - 1) << 22); // Set the desired system divider (PLL MHz / (DIVIDER - 1)).
     
     while(((RIS >> 6) & 1) == 0); // Wait until PLL gets ready.
     RCC2 &= ~(1 << 11);  // The system clock is the PLL output clock divided by 
