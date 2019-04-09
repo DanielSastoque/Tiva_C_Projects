@@ -57,7 +57,7 @@ void Nokia_5110_LCD_init(){
     GPIODATA_A &= ~(1 << 6);    // DC low, incoming SPI bits as a command.
     SysTick_delay_ms(DELAY_DC_RST, SYS_CLK_MHZ);
     
-    SSI0_write(0x21);           // Select extended instruction set
+    SSI0_write(0x21);           // Select extended instruction set. horizontal addressing mode
     SSI0_write(0xB1);           // Set contrast
     SSI0_write(0x04);           // Set temp coefficient
     SSI0_write(0x14);           // LCD Bias mode
@@ -66,4 +66,23 @@ void Nokia_5110_LCD_init(){
     
     SysTick_delay_ms(DELAY_DC_RST, SYS_CLK_MHZ);
     GPIODATA_A |= (1 << 6);     // DC high, incoming SPI bits as data to display.
+}
+
+
+void set_x_y(int x, int y){
+    GPIODATA_A &= ~(1 << 6);    // DC low, incoming SPI bits as a command.
+    SysTick_delay_ms(DELAY_DC_RST, SYS_CLK_MHZ);
+    
+    SSI0_write(0x80 | x);           // Set x
+    SSI0_write(0x40 | y);           // Set y
+    
+    SysTick_delay_ms(DELAY_DC_RST, SYS_CLK_MHZ);
+    GPIODATA_A |= (1 << 6);     // DC high, incoming SPI bits as data to display.
+}
+
+void clear_all(){
+    set_x_y(0, 0);
+    for(int l=0; l < 504; l++){ // x in [0,83], y in [0,5], l in [0, 84x6]
+        SSI0_write(0);
+    }
 }
