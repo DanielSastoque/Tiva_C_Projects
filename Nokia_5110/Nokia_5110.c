@@ -86,3 +86,9 @@ void clear_all(){
         SSI0_write(0);
     }
 }
+
+void draw_image(char image[504]){
+    for(int i=0;i<504;i++){
+        SSI0_write(image[i]);
+    }
+}
